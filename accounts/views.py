@@ -41,6 +41,12 @@ class UserLoginView(LoginView):
     template_name = 'user_login.html'
     authentication_form = UserLoginForm
 
+    # フォーム処理をオーバーライドしてログイン保持の時間を長く書き換える
+    def form_valid(self, form):
+        remember = form.cleaned_data['remember']
+        if remember:
+            self.request.session.set_expiry(1200000)
+        return super().form_valid(form)
 
 # # LogoutViewを使ってログアウトさせる方法に切り替えるため、以下のView継承方式はコメントアウトする
 # # Viewを継承してログアウトビューを作る
@@ -50,6 +56,7 @@ class UserLoginView(LoginView):
 #         logout(request)
 #         return redirect('accounts:user_login')
 
+
 class UserLogoutView(LogoutView):
     pass  # 今回は、LogoutViewを継承するだけで、特に中身は書かなくていい
 
@@ -58,7 +65,7 @@ class UserLogoutView(LogoutView):
 
 # ②クラスにデコレーターをつけて、メソッドを指定するやり方
 # @method_decorator(login_required, name='dispatch')
-class UserView( LoginRequiredMixin, TemplateView):  # ③LoginRequiredMixinを継承させるやり方
+class UserView(LoginRequiredMixin, TemplateView):  # ③LoginRequiredMixinを継承させるやり方
     template_name = 'user.html'
 
     # ①メソッドにデコレーターをつけるやり方　UserViewのdispatchメソッドがよばれるときに、loginを必須とする

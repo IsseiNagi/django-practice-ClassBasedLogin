@@ -36,3 +36,4 @@ class UserLoginForm(AuthenticationForm):
     # userフィールドを一意に識別する値を書く。つまり、models.pyのUserで指定したUSERNAME_FIELD = 'email'の部分である
     username = forms.EmailField(label='メールアドレス')
     password = forms.CharField(label='パスワード', widget=forms.PasswordInput())
+    remember = forms.BooleanField(label='ログイン状態を保持する', required=False)
