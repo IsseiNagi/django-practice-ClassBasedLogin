@@ -1,6 +1,7 @@
 from django import forms
 from .models import Users
 from django.contrib.auth.password_validation import validate_password
+from django.contrib.auth.forms import AuthenticationForm
 
 
 class RegistForm(forms.ModelForm):
@@ -25,7 +26,13 @@ class RegistForm(forms.ModelForm):
         user.save()
         return user
 
+# # LoginView継承方式に切り替えるため、View継承方式で使った以下のUserLoginFormはコメントアウトする
+# class UserLoginForm(forms.Form):
+#     email = forms.EmailField(label='メールアドレス')
+#     password = forms.CharField(label='パスワード', widget=forms.PasswordInput)
 
-class UserLoginForm(forms.Form):
-    email = forms.EmailField(label='メールアドレス')
-    password = forms.CharField(label='パスワード', widget=forms.PasswordInput)
+
+class UserLoginForm(AuthenticationForm):
+    # userフィールドを一意に識別する値を書く。つまり、models.pyのUserで指定したUSERNAME_FIELD = 'email'の部分である
+    username = forms.EmailField(label='メールアドレス')
+    password = forms.CharField(label='パスワード', widget=forms.PasswordInput())

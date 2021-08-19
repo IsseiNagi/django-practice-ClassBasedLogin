@@ -6,6 +6,7 @@ from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.decorators import login_required
 from django.utils.decorators import method_decorator
 from django.contrib.auth.mixins import LoginRequiredMixin
+from django.contrib.auth.views import LoginView, LogoutView
 
 # Create your views here.
 
@@ -19,29 +20,38 @@ class RegistUserView(CreateView):
     form_class = RegistForm
 
 
-# FormViewを継承してログインビューを作る
-class UserLoginView(FormView):
+# # LoginViewを使ってログインさせる方法に切り替えるため、以下のView継承方式はコメントアウトする
+# # FormViewを継承してログインビューを作る
+# class UserLoginView(FormView):
+#     template_name = 'user_login.html'
+#     form_class = UserLoginForm
+
+#     def post(self, request, *args, **kwargs):
+#         email = request.POST['email']
+#         password = request.POST['password']
+#         user = authenticate(email=email, password=password)
+#         next_url = request.POST['next']  # 注釈A
+#         if user is not None and user.is_active:
+#             login(request, user)
+#         if next_url:  # 注釈A
+#             return redirect(next_url)  # 注釈A
+#         return redirect('accounts:home')
+
+class UserLoginView(LoginView):
     template_name = 'user_login.html'
-    form_class = UserLoginForm
-
-    def post(self, request, *args, **kwargs):
-        email = request.POST['email']
-        password = request.POST['password']
-        user = authenticate(email=email, password=password)
-        next_url = request.POST['next']  # 注釈A
-        if user is not None and user.is_active:
-            login(request, user)
-        if next_url:  # 注釈A
-            return redirect(next_url)  # 注釈A
-        return redirect('accounts:home')
+    authentication_form = UserLoginForm
 
 
-# Viewを継承してログアウトビューを作る
-class UserLogoutView(View):
+# # LogoutViewを使ってログアウトさせる方法に切り替えるため、以下のView継承方式はコメントアウトする
+# # Viewを継承してログアウトビューを作る
+# class UserLogoutView(View):
 
-    def get(self, request, *args, **kwargs):
-        logout(request)
-        return redirect('accounts:user_login')
+#     def get(self, request, *args, **kwargs):
+#         logout(request)
+#         return redirect('accounts:user_login')
+
+class UserLogoutView(LogoutView):
+    pass  # 今回は、LogoutViewを継承するだけで、特に中身は書かなくていい
 
 
 # ユーザーページを作る。ユーザーページはログインを必須とする。その制限の掛け方は３通りある。
